@@ -44,6 +44,13 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SudoLib\cCurPostion.cs" />
+    <Compile Include="SudoLib\cLayer.cs" />
+    <Compile Include="SudoLib\cPuzzle.cs" />
+    <Compile Include="SudoLib\cRow.cs" />
+    <Compile Include="SudoLib\cSquare.cs" />
+    <Compile Include="SudoLib\cValidatation.cs" />
+    <Compile Include="SudoLib\g.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
