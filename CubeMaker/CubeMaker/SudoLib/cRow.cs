@@ -9,14 +9,14 @@ namespace CubeMaker.SudoLib
     public class cRow
     {
         // each row consists of an array of cSquare objects.
-        int _rowID;
         cSquare[] _squares;
         const string _smallSpace = "  ";
         const string _largeSpace = "     ";
+        int _row;
 
         public cRow(int row)
         {
-            _rowID = (row + 1) * 100; // RowIDs are 100 - 900
+            _row = row;
             _squares = new cSquare[g.PSIZE];
 
             for (int i = 0; i < g.PSIZE; i++)
@@ -24,7 +24,7 @@ namespace CubeMaker.SudoLib
                 /// square IDs are one-based.
                 /// Column IDs are passed on zero-based, and adjusted in the
                 /// cSquare constructor.
-                _squares[i] = new cSquare(_rowID, i);
+                _squares[i] = new cSquare(_row, i);
             }            
         }
 
@@ -38,6 +38,8 @@ namespace CubeMaker.SudoLib
             _squares = null;
         }
 
+
+        #region PUBLIC PROPERTIES
         public cSquare this[int index]
         {
             get
@@ -85,6 +87,12 @@ namespace CubeMaker.SudoLib
             }
             return retStr.ToString();
         }
+        
+        public int Row  // unmuteable.
+        {
+            get { return _row; }
+        }
+        #endregion // PUBLIC PROPERTIES
 
     }
 }

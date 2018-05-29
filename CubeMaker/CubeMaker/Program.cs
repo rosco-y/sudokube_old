@@ -11,6 +11,17 @@ namespace CubeMaker
     {
         static void Main(string[] args)
         {
+            int seed = 1;
+            if (args.Count() > 0)
+                seed = int.Parse(args[0]);
+            else
+                g.Banner($"Using default seed: {seed}.");
+
+            cPuzzle puzzle = new cPuzzle();
+            if (puzzle.BuildPuzzle(seed))
+            {
+                puzzle.PrintPuzzle();
+            }
         }
     }
 }

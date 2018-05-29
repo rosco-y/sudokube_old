@@ -171,7 +171,7 @@ namespace CubeMaker.SudoLib
         #endregion PUBLIC PROPERTIES
 
         #region PUBLIC METHODS
-        public void SetEqual(cCurPosition aCur)
+        public void SetEqualToMe(cCurPosition aCur)
         {
             aCur._curRow = this.Row;
             aCur._curCol = this.Col;

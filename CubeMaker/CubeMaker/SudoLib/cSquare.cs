@@ -8,8 +8,9 @@ namespace CubeMaker.SudoLib
 {
     public class cSquare
     {
-        int _rowID;
-        int _colID;
+        int _row;
+        int _col;
+
         int _value;
         bool[] _available;
         List<cSquare> _validationList;
@@ -18,8 +19,8 @@ namespace CubeMaker.SudoLib
 
         public cSquare(int row, int col)
         {
-            _rowID = row; // rowID has already been adjusted in the cRow Constructor.
-            _colID = col;
+            _row = row; // rowID has already been adjusted in the cRow Constructor.
+            _col = col;
 
             _value = 0;
             _available = new bool[g.PSIZE + 1]; // so values 1 to 9 can be used as indexes.
@@ -32,9 +33,18 @@ namespace CubeMaker.SudoLib
 
         public static int Seed
         {
-            set { _seed = value; }
+            set {
+                /// I was concidering a check to see if _random was null, and if not,
+                /// reinstantiate it with a (potentially) new seed value, but it occurred to 
+                /// me that a new puzzle would start with all new cSquares, which would mean
+                /// they have a new, shared Random (_random) variable., so I don't believe that
+                /// will be necessary.
+                _seed = value;
+            }
             get { return _seed; }
         }
+
+
         public int Value
         {
             set { _value = value; }
@@ -197,24 +207,16 @@ namespace CubeMaker.SudoLib
 
         } // public bool TrySetValue()
 
-        public int RowID
+        public int Row
         {
-            get { return _rowID; }
+            get { return _row; }
         }
 
-        public int ColID
+        public int Col
         {
-            get { return _colID; }
+            get { return _col; }
         }
 
-        /// <summary>
-        /// SquareID: row and colID combined into a single ID.
-        /// ex: 230 = Row 2 (rowID/100), Col 3 (colID/10)
-        /// </summary>
-        public int SquareID
-        {
-            get { return _rowID + _colID; }
-        }
 
         public override string ToString()
         {

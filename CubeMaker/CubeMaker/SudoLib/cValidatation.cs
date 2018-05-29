@@ -14,26 +14,53 @@ namespace CubeMaker.SudoLib
         public cValidatation(cLayer layer)
         {
             _layer = layer;
-            buildLinks();
+            buildValidationLinkedLists();
         }
         #endregion CONSTRUCTION / DESTRUCTION
 
         #region CONSTRUCT LINKS
 
-        void buildLinks()
+        /// <summary>
+        /// Each cSquare object contains a member:
+        ///  List<cSquare> _validationList;
+        ///  
+        /// buildValidationLinkedLists iterates over every square in the puzzle and
+        /// populates their linked lists with all of there relative neighbors.  That is,
+        /// all of the puzzle elements that the cSquare's value cannnot duplicate, as it
+        /// would then violate the rules of sudoku.
+        /// 
+        /// NOTE:
+        /// These lists are built before an attempt to make a sudoku puzzle, as they are
+        /// used during the puzzle development process:  When a value is considered for
+        /// a square, it then iterates through it's _validationList, to verify that the
+        /// value in concideration is not already in use, and therefore cannot be used 
+        /// again.
+        /// </summary>
+        void buildValidationLinkedLists()
         {
             for (int row = 0; row < g.PSIZE; row++)
             {
                 for (int col = 0; col < g.PSIZE; col++)
                 {
                     _squareList = _layer[row][col].ValidationList;
-                    buildRegionLinks(row, col);
-                    buildRowLinks(row);
-                    buildColumnLinks(col);
+                    addRegionLinks(row, col);
+                    addRowLinks(row);
+                    addColumnLinks(col);
                 }
             }
         }
 
+        /// <summary>
+        /// AddLink(row, col) verifies that a cSquare doesn't already exist in the
+        /// _validationList before adding the cSquare at location _layer[row][col].
+        /// If the same cSquare was added dupicately, the list would still function,
+        /// but uncessary duplicate checks would be made:
+        /// (i.e., is this value = value at _layer[0][1]?  OK then, is this value = 
+        /// value at _layer[0][1]?  Obviously, The check at [0][1] only needs to be 
+        /// done one time.)
+        /// </summary>
+        /// <param name="row"></param>
+        /// <param name="col"></param>
         void AddLink(int row, int col)
         {
             cSquare sqr = _layer[row][col];
@@ -57,7 +84,7 @@ namespace CubeMaker.SudoLib
             }
         }
 
-        void buildRegionLinks(int row, int col)
+        void addRegionLinks(int row, int col)
         {
 
             eRegion thisRegion = GetRegion(row, col);
@@ -94,7 +121,7 @@ namespace CubeMaker.SudoLib
                     iRow = 6; iCol = 6;
                     break;
                 default:
-                    throw new Exception("Invalid eRegion in cValidation.buildRegionLinks()");
+                    throw new Exception("Invalid eRegion in cValidation.addRegionLinks()");
             }
             BuildRegionList(iRow, iCol);
 
@@ -108,17 +135,17 @@ namespace CubeMaker.SudoLib
         /// </param>
         /// <returns>
         /// First cSqare added to this collection, so that it can be added to 
-        /// another link using a List<cSquare>.Add(buildRowLinks(row) type of syntax,
+        /// another link using a List<cSquare>.Add(addRowLinks(row) type of syntax,
         /// thereby building one continuing list that can be traversed simply by 
         /// traversing each element of the ValidationList of a cSquare.
         /// </returns>
-        void buildRowLinks(int row)
+        void addRowLinks(int row)
         {
             for (int col = 0; col < g.PSIZE; col++)
                 AddLink(row, col);
         }
 
-        void buildColumnLinks(int col)
+        void addColumnLinks(int col)
         {
             List<cSquare> retList = new List<cSquare>();
 
