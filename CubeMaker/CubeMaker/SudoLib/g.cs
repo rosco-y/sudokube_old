@@ -9,7 +9,6 @@ namespace CubeMaker.SudoLib
     public static class g
     {
         public const int PSIZE = 9;
-
         public static void Banner(string msg)
         {
             Console.WriteLine(new string('=', (int)(msg.Length * 1.5)));

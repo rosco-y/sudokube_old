@@ -77,23 +77,34 @@ namespace CubeMaker.SudoLib
                     }  // if (_cur.StartPosition)
                     else // not _cur.StartPosition...
                     {
-                        /// no available values for this cell, but we are not at start position, so
-                        /// restore the avialable values for this cell and backspace to try a new value
-                        /// in the previous cell and try again.
-                        bool doneBackspacing = (_layer[_cur.Row][_cur.Col].AvailableCount() > 0);
-                        while (!doneBackspacing)
+
+                        /// if the new (previous) cell has available numbers to try (numbers that have not
+                        /// yet been tried by the new cell), then we can continue with the newly visited
+                        /// cell, else we should keep backspacing until we arrive at a cell that we has values
+                        /// we can experiment with.
+                        // backSpace -- _layer[_cur.Row][_cur.Col].AvailableReset();
+                        backSpace();
+                        while ((!_cur.StartPosition && (_layer[_cur.Row][_cur.Col].AvailableCount() < 1)))
                         {
                             cSquare curSquare = _layer[_cur.Row][_cur.Col];
-                            curSquare.AvailableReset();
                             int failedValue = curSquare.Value;
                             curSquare.Value = 0;
 
-                            /// might be redundant if AvailableCount was 0, but OK....
-                            curSquare.Available[failedValue] = false;
-                            _cur--;
+                            // backspace - curSquare.AvailableReset();
+                            backSpace();
                             /// ensure that the square we have just backspaced to has values available to 
                             /// try.  If it doesn't, back up one more space.
-                            doneBackspacing = _layer[_cur.Row][_cur.Col].AvailableCount() > 0;
+                            if (!_cur.StartPosition && (_layer[_cur.Row][_cur.Col].AvailableCount() < 1))
+                            {
+                                // backspace - _layer[_cur.Row][_cur.Col].AvailableReset();
+                                backSpace();
+                            }
+                            else
+                            {
+                                cCurPosition t = new cCurPosition(_cur);
+                                t++;
+                                _layer[t.Row][t.Col].AvailableReset();
+                            }
                         }
                     }
 
@@ -107,12 +118,19 @@ namespace CubeMaker.SudoLib
 
                 Console.WriteLine(_layer);
 
-                //g.Pause();
+                g.Pause();
 
             } // while (!done)
 
             return success;
         } // BuildPuzzle
+
+        void backSpace()
+        {
+            cSquare sqr = _layer[_cur.Row][_cur.Col];
+            sqr.Available[sqr.Value] = false;
+            _cur--;
+        }
 
         public void PrintPuzzle()
         {

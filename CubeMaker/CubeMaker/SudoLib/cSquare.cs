@@ -13,6 +13,7 @@ namespace CubeMaker.SudoLib
 
         int _value;
         bool[] _available;
+        bool[] _isInViolationList;
         List<cSquare> _validationList;
         static int _seed = -1;
         static Random _random;
@@ -24,6 +25,7 @@ namespace CubeMaker.SudoLib
 
             _value = 0;
             _available = new bool[g.PSIZE + 1]; // so values 1 to 9 can be used as indexes.
+            _isInViolationList = new bool[g.PSIZE + 1];
             _available[0] = false;
             for (int i = 1; i <= g.PSIZE; i++) // 1 - 9
                 _available[i] = true;
@@ -73,6 +75,22 @@ namespace CubeMaker.SudoLib
             return retValue;
         }
 
+        bool legalMovesExist()
+        {
+            bool legalMovesExist = false;
+
+            for (int i = 1; i <= g.PSIZE; i++)
+                /// legal move exist OR EQUALS "i" is NOT in the violation list.
+                legalMovesExist |= (!_isInViolationList[i]);
+
+            return legalMovesExist;
+        }
+
+        bool checkAvailable(int i)
+        {
+            return _available[i - 1]; // translate 1-9 to 0-8.
+        }
+
         /// <summary>
         /// Make Values 1 - 9 available (again) for this square.
         /// </summary>
@@ -83,6 +101,27 @@ namespace CubeMaker.SudoLib
                 _available[i] = true;
 
             return;
+        }
+
+
+        /// <summary>
+        /// isInViolationList[n] is set true for all of this cell's sudoCousins.  If a 
+        /// sudoCousin's value is 9, then no other related cells can contain a 9 without
+        /// violating the sudoRules.
+        /// </summary>
+        void InitializeViolationArray()
+        {
+            _isInViolationList[0] = true; // no zero's in sudoku...?
+
+            for (int i = 1; i <= g.PSIZE; i++)
+                _isInViolationList[i] = false;
+
+            foreach (cSquare sqr in _validationList)
+            {
+                // it would not be legal to use the values found in the validationList twice,
+                // so we add them to the violiationList.
+                _isInViolationList[sqr.Value] = true;
+            }
         }
 
         int Next()
@@ -123,86 +162,60 @@ namespace CubeMaker.SudoLib
             int tryValue = -1;
             bool doneTrying = false;
 
+            InitializeViolationArray();
+
             while (!doneTrying)
             {
                 int availableCount = AvailableCount();
-
-                if (availableCount >= 2)   // 2 or more.
+                if (legalMovesExist()) // at least one value that doesn't violate the rules of sudoku.
                 {
-                    bool foundAvailableValue = false;
-                    while (!foundAvailableValue)
+                    if (availableCount >= 2)   // 2 or more.
                     {
-                        tryValue = Next();
-                        foundAvailableValue = _available[tryValue];
-                    }
-                }
-                else // if 1 more value available
-                {
-                    if (availableCount > 0)
-                    {
-                        for (int i = 1; i < g.PSIZE; i++)
-                            if (_available[i])
-                            {
-                                tryValue = i;
-                                break;
-                            }
-                    }
-                    else
-                    {
-                        tryValue = -1;
-                        doneTrying = true;
-                        success = false;
-                    }
-
-                }
-                if (tryValue > 0) // value was found, and now needs to be validated using the rules of Sudoku.
-                { 
-
-                    //////////////////////////////////////////////////////////////////////////////////////
-                    /// Fine, the value is available, but now we need to check it's region, up/down and //
-                    /// across neighbors to ensure that it doesn't violate the rules of sudoku.         //
-                    //////////////////////////////////////////////////////////////////////////////////////
-                    bool inviolates = false;
-                    foreach (cSquare tstSqr in _validationList)
-                    {
-                        if (tstSqr.Value == tryValue)
+                        bool foundAvailableValue = false;
+                        while (!foundAvailableValue)
                         {
-                            /// it's tempting to invalidate the value here, because it can't be used due to 
-                            /// conflicting values in the region, row or column, but that can't be done here
-                            /// because the values preceeding this value may be the conflicting value, and may
-                            /// be subject to change.  (if the current position moves back to a previous square,
-                            /// then the current value of the previous square becomes not available for that
-                            /// square, which could subsequently make this same value valid for this current
-                            /// square.
-                             inviolates = true;
-                            break;
+                            tryValue = Next();
+                            foundAvailableValue = _available[tryValue];
                         }
+                        // found a value, now see if it is in violation
+                        // if it's not in the list, it's sudo-legal.
+                        success = doneTrying = !_isInViolationList[tryValue];
                     }
-                    if (inviolates)
+                    else // if 1 more value available
                     {
-                        // this value failed, we are not done trying to find a value and we did not succeeed.
-                        _available[tryValue] = success = false;
-                        doneTrying = (AvailableCount() < 1);
+                        if (availableCount > 0)
+                        {
+                            /// only one value available, find value directly.
+                            for (int i = 1; i <= g.PSIZE; i++)
+                                if (_available[i])
+                                {
+
+                                    doneTrying = success = !_isInViolationList[i]; ;
+                                    if (success)
+                                        tryValue = i;
+                                    break;
+                                }
+                        }
+                        else
+                        {
+                            /// all out of values, must backspace and try new values.
+                            tryValue = -1;
+                            doneTrying = true;
+                            success = false;
+                        }
+
                     }
-                    else
-                    {
-                        /// Actaully, since we are no longer looking for a value for this square, it seems as
-                        /// though it might not be important to set the _available[usedValue] = false, but it
-                        /// feels somehow "safer".
-                        _available[tryValue] = false;
-
-
-                        /////////////////////////////////////////////////////////////
-                        /// DON'T FORGET TO SET THE VALUE--THAT'S WHY WE'RE HERE!!///
-                        /////////////////////////////////////////////////////////////
-                        _value = tryValue;
-                        doneTrying = success = true;
-                    }
-
-
-                } // tryValue > 0, tryValue was set, and needed to be validated.
+                }
+                else
+                {
+                    doneTrying = true;
+                    success = false;
+                    tryValue = -1;
+                }
 
             } // while (!doneTrying)
+            if (success)
+                _value = tryValue;
             return success;
 
         } // public bool TrySetValue()

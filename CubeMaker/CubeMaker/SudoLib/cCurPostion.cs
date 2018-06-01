@@ -22,6 +22,12 @@ namespace CubeMaker.SudoLib
             _curCol = col;
         }
 
+        public cCurPosition(cCurPosition p)
+        {
+            _curCol = p._curCol;
+            _curRow = p._curRow;
+        }
+
         #region OVERRIDE OPERATORS
 
         public static cCurPosition operator ++(cCurPosition a)
