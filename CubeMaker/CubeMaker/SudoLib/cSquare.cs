@@ -140,7 +140,7 @@ namespace CubeMaker.SudoLib
                 {
                     if (availableCount > 0)
                     {
-                        for (int i = 1; i < g.PSIZE; i++)
+                        for (int i = 1; i <= g.PSIZE; i++)
                             if (_available[i])
                             {
                                 tryValue = i;
@@ -159,10 +159,10 @@ namespace CubeMaker.SudoLib
                 { 
 
                     //////////////////////////////////////////////////////////////////////////////////////
-                    /// Fine, the value is available, but now we need to check it's region, up/down and //
+                    /// Fine, the value is available, but now we need to check it's region, up/down and //                                                                                         
                     /// across neighbors to ensure that it doesn't violate the rules of sudoku.         //
                     //////////////////////////////////////////////////////////////////////////////////////
-                    bool inviolates = false;
+                    bool invalid = false;
                     foreach (cSquare tstSqr in _validationList)
                     {
                         if (tstSqr.Value == tryValue)
@@ -174,11 +174,11 @@ namespace CubeMaker.SudoLib
                             /// then the current value of the previous square becomes not available for that
                             /// square, which could subsequently make this same value valid for this current
                             /// square.
-                             inviolates = true;
+                             invalid = true;
                             break;
                         }
                     }
-                    if (inviolates)
+                    if (invalid)
                     {
                         // this value failed, we are not done trying to find a value and we did not succeeed.
                         _available[tryValue] = success = false;

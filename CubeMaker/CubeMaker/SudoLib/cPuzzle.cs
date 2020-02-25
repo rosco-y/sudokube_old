@@ -48,7 +48,7 @@ namespace CubeMaker.SudoLib
             cCurPosition lastPosition = new cCurPosition();
             int loop = 0;
             bool done = false;
-            while (!done)
+                       while (!done)
             {
                 _cur.SetEqualToMe(lastPosition);
                 if (_layer[_cur.Row][_cur.Col].TrySetValue())
@@ -67,7 +67,7 @@ namespace CubeMaker.SudoLib
                             /// ERROR CONDITION--This would mean that there are no possible
                             /// sudoku solutions, since we are on the first square of the puzzle,
                             /// and no more values available to try??
-                            
+
                             done = true; // what other option is there?
 
                             string msg = "cPuzzle.BuildPuzzle()" + Environment.NewLine + "ILLEGAL RESULT: No Solution Found.";
@@ -100,13 +100,12 @@ namespace CubeMaker.SudoLib
 
                 } // else (!_cur.StartPosition)
 
-                if (_cur < lastPosition)
-                    g.Banner($"Loop: {++loop}: ({_cur.Row}, {_cur.Col}). <<<-- BACKSPACE.");
-                else
-                    g.Banner($"Loop: {++loop}: ({_cur.Row}, {_cur.Col}).");
+                //if (_cur < lastPosition)
+                //    g.Banner($"Loop: {++loop}: ({_cur.Row}, {_cur.Col}). <<<-- BACKSPACE.");
+                //else
+                //    g.Banner($"Loop: {++loop}: ({_cur.Row}, {_cur.Col}).");
 
-                Console.WriteLine(_layer);
-
+                //Console.WriteLine(_layer);
                 //g.Pause();
 
             } // while (!done)
@@ -117,6 +116,7 @@ namespace CubeMaker.SudoLib
         public void PrintPuzzle()
         {
             Console.WriteLine(_layer.LayerString());
+            g.Pause();                           
         }
         #endregion // METHODS
 

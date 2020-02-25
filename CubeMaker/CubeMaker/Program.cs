@@ -13,7 +13,10 @@ namespace CubeMaker
         {
             int seed = 1;
             if (args.Count() > 0)
+            {
                 seed = int.Parse(args[0]);
+                g.Banner($"Using seed {seed}");
+            }
             else
                 g.Banner($"Using default seed: {seed}.");
 

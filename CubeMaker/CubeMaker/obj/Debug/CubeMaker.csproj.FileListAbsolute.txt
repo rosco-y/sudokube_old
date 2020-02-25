@@ -5,3 +5,9 @@ D:\PROJECTS\GAMES\SUDOKU\sudokube\CubeMaker\CubeMaker\bin\Debug\CubeMaker.pdb
 D:\PROJECTS\GAMES\SUDOKU\sudokube\CubeMaker\CubeMaker\obj\Debug\CubeMaker.exe
 D:\PROJECTS\GAMES\SUDOKU\sudokube\CubeMaker\CubeMaker\obj\Debug\CubeMaker.pdb
 D:\PROJECTS\GAMES\SUDOKU\sudokube\CubeMaker\CubeMaker\obj\Debug\CubeMaker.csprojResolveAssemblyReference.cache
+C:\DATA\PROJECTS\GITHUB\sudokube\CubeMaker\CubeMaker\bin\Debug\CubeMaker.exe.config
+C:\DATA\PROJECTS\GITHUB\sudokube\CubeMaker\CubeMaker\bin\Debug\CubeMaker.exe
+C:\DATA\PROJECTS\GITHUB\sudokube\CubeMaker\CubeMaker\bin\Debug\CubeMaker.pdb
+C:\DATA\PROJECTS\GITHUB\sudokube\CubeMaker\CubeMaker\obj\Debug\CubeMaker.exe
+C:\DATA\PROJECTS\GITHUB\sudokube\CubeMaker\CubeMaker\obj\Debug\CubeMaker.pdb
+C:\DATA\PROJECTS\GITHUB\sudokube\CubeMaker\CubeMaker\obj\Debug\CubeMaker.csprojAssemblyReference.cache
